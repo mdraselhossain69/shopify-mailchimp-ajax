@@ -1,0 +1,190 @@
+<div class="newsletter text-center" data-section-id="{{ section.id }}" data-section-type="newsletter-signup-section">
+  {% unless section.settings.heading == blank %}
+    <h2 {% if section.settings.subheading == blank %}class="section-title"{% endif %}>{{ section.settings.heading | escape }}</h2>
+  {% endunless %}
+  {% if section.settings.subheading != blank %}
+    <div class="rte">{{ section.settings.subheading }}</div>
+  {% endif %}
+  <div class="wrapper">
+    {% if section.settings.newsletter_form_action != blank %}
+      <form action="{{ section.settings.newsletter_form_action }}" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" target="_blank" class="input-group">
+
+        <p class="form--success hide">{{ 'general.newsletter_form.confirmation' | t }}</p>
+        <p class="errors hide">use another </p>
+
+        <div class="input-group">
+           
+            <input type="email" value="{% if customer %}{{ customer.email }}{% endif %}" placeholder="{{ 'general.newsletter_form.email_placeholder' | t }}" name="EMAIL" id="Email" class="input-group__field newsletter__input" autocorrect="off" autocapitalize="off">
+
+          <span class="input-group__btn">
+              <button type="submit" class="btn newsletter__submit" name="subscribe" id="subscribe">
+                <span class="newsletter__submit-text--large">{{ 'general.newsletter_form.submit' | t }}</span>
+              </button>
+            </span>
+        </div>
+      </form>
+    {% else %}
+      {% form 'customer' %}
+        {{ form.errors | default_errors }}
+        {% if form.posted_successfully? %}
+          <p class="form--success">{{ 'general.newsletter_form.confirmation' | t }}</p>
+        {% else %}
+          <div class="input-group">
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            <label for="Email" class="newsletter__label label--hidden">{{ 'general.newsletter_form.email_placeholder' | t }}</label>
+            <input type="email" value="{% if customer %}{{ customer.email }}{% endif %}" placeholder="{{ 'general.newsletter_form.email_placeholder' | t }}" name="contact[email]" id="Email" class="input-group__field newsletter__input" autocorrect="off" autocapitalize="off">
+            <span class="input-group__btn">
+              <button type="submit" class="btn newsletter__submit" name="commit" id="subscribe">
+                <span class="newsletter__submit-text--large">{{ 'general.newsletter_form.submit' | t }}</span>
+              </button>
+            </span>
+          </div>
+        {% endif %}
+      {% endform %}
+    {% endif %}
+  </div>
+</div>
+
+{% if section.settings.newsletter_form_action != blank %}
+<script>
+  $(function() {
+     var form = $('#mc-embedded-subscribe-form'); // use any lookup method at your convenience
+      $('#mc-embedded-subscribe-form').submit(function(e) {  
+       var $this = $(this);
+
+        $.ajax({
+          type: $this.attr('method'),
+          url: $this.attr('action').replace('/post?', '/post-json?').concat('&c=?'),
+          data: $this.serialize(),
+          timeout: 5000, // Set timeout value, 5 seconds
+          cache       : false,
+          dataType    : 'jsonp',
+          contentType: "application/json; charset=utf-8",
+          error       : function(err) {alert('Could not connect to the registration server. Please try again later.'); },// put user friendly connection error message 
+          success     : function(data) {
+              if (data.result != "success") {
+                // mailchimp returned error, check data.msg
+                  //console.log(data.msg);
+                  $('#mc-embedded-subscribe-form p.errors').removeClass('hide');
+                  var str = data.msg;
+                  if (str.indexOf( "subscribed" ) > - 1) {
+                    $('#mc-embedded-subscribe-form p.errors').text('You are already subscribed.');
+                    console.log('hoisere');
+                  }else{
+                    $('#mc-embedded-subscribe-form p.errors').text(data.msg);
+                  }
+                  console.log(data.msg)
+              } else {
+                 // It worked, carry on...
+                 //$('p.form--success').html(data.message);
+                 $('p.form--success').removeClass('hide');
+                 $('#mc-embedded-subscribe-form p.errors').addClass('hide');
+                 $('#mc-embedded-subscribe-form .input-group').fadeOut();
+              }
+          }
+        });
+        return false;
+      });
+  });
+</script>
+{% endif %}
+{% schema %}
+{
+  "name": {
+    "de": "Newsletter",
+    "en": "Newsletter",
+    "es": "Boletín",
+    "fr": "Newsletter",
+    "it": "Newsletter",
+    "ja": "メールマガジン",
+    "pt-BR": "Newsletter"
+  },
+  "class": "index-section newsletter-signup",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": {
+        "de": "Titel",
+        "en": "Heading",
+        "es": "Título",
+        "fr": "Titre",
+        "it": "Heading",
+        "ja": "見出し",
+        "pt-BR": "Título"
+      },
+      "default": {
+        "de": "Unseren Newsletter abonnieren",
+        "en": "Subscribe to our newsletter",
+        "es": "Suscríbete a nuestro boletín de noticias",
+        "fr": "Inscription à la newsletter",
+        "it": "Iscriviti alla nostra newsletter",
+        "ja": "ストアからのお知らせを受け取る",
+        "pt-BR": "Receber nosso newsletter"
+      }
+    },
+    {
+      "type": "richtext",
+      "id": "subheading",
+      "label": {
+        "de": "Unter-Überschrift",
+        "en": "Subheading",
+        "es": "Subtítulo",
+        "fr": "Sous-titre",
+        "it": "Sottotitolo",
+        "ja": "小見出し",
+        "pt-BR": "Subtítulo"
+      },
+      "default": {
+        "de": "<p>Eine kurze Beschreibung zum Inhalt des Newsletters</p>",
+        "en": "<p>A short sentence describing what someone will receive by subscribing</p>",
+        "es": "<p>Una frase corta que describe lo que las personas recibirán al suscribirse</p>",
+        "fr": "<p>Petite phrase qui décrit ce qu'on reçoit en s'inscrivant</p>",
+        "it": "<p>Una breve frase che descrive ciò che qualcuno riceverà effettuando l'iscrizione</p>",
+        "ja": "<p>メルマガ購読者に向けたメッセージを入れましょう</p>",
+        "pt-BR": "<p>Uma frase curta que descreve o que alguém receberá ao assinar</p>"
+      }
+    },
+    {
+      "type": "paragraph",
+      "content": {
+        "de": "Für alle Kunden, die sich anmelden, wird in Shopify ein Konto erstellt. [Kunden anzeigen](/admin/customers?query=&accepts_marketing=1)",
+        "en": "Any customers who sign up, will have an account created for them in Shopify. [View customers](/admin/customers?query=&accepts_marketing=1)",
+        "es": "Todos los clientes que se registren tendrán una cuenta creada para ellos en Shopify. [Ver clientes](/admin/customers?query=&accepts_marketing=1)",
+        "fr": "Les clients qui s'inscrivent auront un compte créé pour eux sur Shopify. [Afficher les clients](/admin/customers?query=&accepts_marketing=1)",
+        "it": "A qualsiasi cliente si iscriva verrà creato un account su Shopify. [Visualizza clienti](/admin/customers?query=&accepts_marketing=1)",
+        "ja": "登録したお客様は、Shopifyでアカウントが作成されます。[お客様を表示](/admin/customers?query=&accepts_marketing=1)",
+        "pt-BR": "Todos os clientes que se inscreverem terão uma conta criada para eles na Shopify. [View customers](/admin/customers?query=&accepts_marketing=1)"
+      }
+    },
+    {
+      "type": "text",
+      "id": "newsletter_form_action",
+      "label": "MailChimp form action URL",
+      "info": "[Where do I find my MailChimp form action URL?](https:\/\/shopify.barrelny.com\/where-do-i-find-the-mailchimp-signup-url\/)"
+    }
+  ],
+  "presets": [
+    {
+      "name": {
+        "de": "Newsletter",
+        "en": "Newsletter",
+        "es": "Boletín",
+        "fr": "Newsletter",
+        "it": "Newsletter",
+        "ja": "メールマガジン",
+        "pt-BR": "Newsletter"
+      },
+      "category": {
+        "de": "Promotional",
+        "en": "Promotional",
+        "es": "Promocional",
+        "fr": "Promotionnel",
+        "it": "Promozionale",
+        "ja": "プロモーション用",
+        "pt-BR": "Promocional"
+      }
+    }
+  ]
+}
+{% endschema %}
