@@ -1,0 +1,62 @@
+.newsletter.text-center {
+    padding: 30px;
+    background: #f0f0f0;
+}
+.newsletter h2 {
+    font-family: "Fjalla One", "HelveticaNeue", "Helvetica Neue", sans-serif;
+    font-style: normal;
+    color: #3b3d39;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 40px;
+    text-transform: none;
+    letter-spacing: 0;
+}
+.newsletter .rte p {
+	    font-family: "Fjalla One", "HelveticaNeue", "Helvetica Neue", sans-serif;
+    font-style: normal;
+    color: #3b3d39;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 20px;
+    text-transform: none;
+    margin-top: 10px;
+    letter-spacing: 0;
+}
+.newsletter form {
+    max-width: 540px;
+    margin: 0 auto;
+    padding: 0 0 30px;
+}
+.newsletter form .input-group {
+    display: table;
+    width: 100%;
+}
+.newsletter .input-group__field {
+    font-family: "Fjalla One", "HelveticaNeue", "Helvetica Neue", sans-serif;
+    font-style: normal;
+    color: #3b3d39;
+    font-weight: 400;
+    font-size: 16px;
+    text-transform: none;
+    background: #fff;
+    outline: none;
+    border-radius: 0;
+    padding: 16px 15px 15px;
+    display: table-cell;
+    width: 100%;
+}
+.newsletter form span.input-group__btn {
+    display: table-cell;
+    width: 1%;
+    vertical-align: top;
+}
+.newsletter form span.input-group__btn button#subscribe {
+    padding: 14px 20px;
+    margin-left: 5px;
+    margin-right: 10px;
+    background: #3b3d39;
+    border-color: #3b3d39;
+    color: #fff;
+    border-radius: 0;
+}
